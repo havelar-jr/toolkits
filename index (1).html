@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henrique Avelar — Toolkits</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1219;
+  --surface: #141820;
+  --surface2: #1a2030;
+  --blue-deep: #1A3A5C;
+  --blue-mid: #2D7DD2;
+  --blue-neon: #4da6ff;
+  --cyan: #4ECDC4;
+  --white: #F7F8FA;
+  --muted: #6b7a99;
+  --border: rgba(45,125,210,0.15);
+  --border-hover: rgba(45,125,210,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--blue-deep); border-radius: 2px; }
+
+/* BLOBS */
+.canvas-bg {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.blob {
+  position: absolute; border-radius: 50%; filter: blur(80px);
+  animation: drift 18s ease-in-out infinite alternate;
+}
+.blob-1 { width:600px; height:600px; background:rgba(26,58,92,0.75); top:-200px; left:-120px; animation-delay:0s; }
+.blob-2 { width:420px; height:420px; background:rgba(45,125,210,0.35); top:80px; right:-80px; animation-delay:-6s; }
+.blob-3 { width:280px; height:280px; background:rgba(78,205,196,0.18); bottom:220px; left:32%; animation-delay:-12s; }
+.blob-4 { width:200px; height:200px; background:rgba(77,166,255,0.12); bottom:-60px; right:18%; animation-delay:-4s; }
+
+@keyframes drift {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(28px,-18px) scale(1.04); }
+  66%  { transform: translate(-18px,28px) scale(0.96); }
+  100% { transform: translate(18px,10px) scale(1.02); }
+}
+
+.grid-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(45,125,210,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,125,210,0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* LAYOUT */
+.wrap { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  padding: 20px 56px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(15,18,25,0.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { font-family:'Syne',sans-serif; font-size:17px; font-weight:800; letter-spacing:-0.02em; }
+.nav-brand span { color: var(--blue-neon); text-shadow: 0 0 16px rgba(77,166,255,0.5); }
+.nav-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 160px 0 100px;
+}
+
+.hero-eyebrow {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em;
+  text-transform:uppercase; color:var(--blue-neon);
+  margin-bottom:32px; display:flex; align-items:center; gap:16px;
+  opacity:0; animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.hero-eyebrow::before {
+  content:''; display:block; width:32px; height:1px;
+  background:var(--blue-neon); box-shadow:0 0 8px var(--blue-neon);
+}
+
+.hero h1 {
+  font-family:'Syne',sans-serif;
+  font-size: clamp(52px,7.5vw,108px);
+  font-weight:800; line-height:0.9; letter-spacing:-0.04em;
+  margin-bottom:40px;
+  opacity:0; animation: fadeUp 0.8s ease 0.4s forwards;
+}
+.hero h1 em {
+  font-style:normal; color:transparent;
+  -webkit-text-stroke: 1.5px var(--blue-neon);
+  text-shadow: 0 0 60px rgba(77,166,255,0.25);
+  display:block;
+}
+
+.hero-sub {
+  font-size:16px; color:var(--muted); max-width:480px; line-height:1.85;
+  margin-bottom:52px;
+  opacity:0; animation: fadeUp 0.8s ease 0.6s forwards;
+}
+.hero-sub strong { color:var(--white); font-weight:400; }
+
+.hero-stats {
+  display:flex; gap:48px; margin-bottom:56px;
+  opacity:0; animation: fadeUp 0.8s ease 0.7s forwards;
+}
+.stat-num { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; color:var(--blue-neon); line-height:1; letter-spacing:-0.03em; text-shadow: 0 0 24px rgba(77,166,255,0.3); }
+.stat-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+.hero-cta { display:flex; gap:20px; align-items:center; opacity:0; animation: fadeUp 0.8s ease 0.8s forwards; }
+
+.btn-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 30px; background:var(--blue-mid); color:var(--white);
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.16em;
+  text-transform:uppercase; text-decoration:none; border-radius:3px;
+  transition:background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 28px rgba(45,125,210,0.3);
+}
+.btn-primary:hover { background:var(--blue-neon); box-shadow:0 0 36px rgba(77,166,255,0.45); }
+
+.btn-ghost {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color 0.2s;
+}
+.btn-ghost:hover { color:var(--white); }
+
+/* DIVIDER */
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--border-hover),transparent); }
+
+/* SECTION */
+.section { padding:96px 0; }
+.section-eyebrow {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.28em;
+  text-transform:uppercase; color:var(--blue-neon); margin-bottom:48px;
+  display:flex; align-items:center; gap:16px;
+}
+.section-eyebrow::before {
+  content:''; width:24px; height:1px;
+  background:var(--blue-neon); box-shadow:0 0 6px var(--blue-neon);
+}
+.section-title { font-family:'Syne',sans-serif; font-size:clamp(26px,3vw,42px); font-weight:800; letter-spacing:-0.03em; line-height:1.05; margin-bottom:16px; }
+.section-desc { font-size:15px; color:var(--muted); max-width:500px; line-height:1.85; margin-bottom:64px; }
+
+/* TOOLKIT CARDS */
+.toolkits-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:2px; }
+
+.toolkit-card {
+  position:relative; padding:48px 44px;
+  background:var(--surface); border:1px solid var(--border);
+  overflow:hidden; text-decoration:none; color:inherit; display:block;
+  transition:border-color 0.3s, background 0.3s;
+}
+.toolkit-card:hover { background:var(--surface2); border-color:var(--border-hover); }
+
+.toolkit-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--card-accent,var(--blue-mid)),transparent);
+  opacity:0; transition:opacity 0.3s;
+}
+.toolkit-card:hover::before { opacity:1; }
+
+.card-watermark {
+  position:absolute; bottom:-16px; right:-8px;
+  font-family:'Syne',sans-serif; font-size:110px; font-weight:800;
+  color:rgba(255,255,255,0.025); line-height:1; pointer-events:none; letter-spacing:-0.05em;
+}
+
+.card-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 14px; border-radius:2px; margin-bottom:28px;
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase;
+  background:rgba(45,125,210,0.1); color:var(--blue-neon);
+  border:1px solid rgba(45,125,210,0.25);
+}
+.card-badge.available::before {
+  content:''; width:6px; height:6px; border-radius:50%; background:var(--blue-neon);
+  box-shadow:0 0 6px var(--blue-neon); animation:pulse 2s infinite;
+}
+.card-badge.soon { background:rgba(107,122,153,0.1); color:var(--muted); border-color:rgba(107,122,153,0.2); }
+
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+.card-index {
+  font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
+  color:rgba(77,166,255,0.25); letter-spacing:0.08em; margin-bottom:12px;
+}
+.card-title { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:14px; }
+.card-desc { font-size:13px; color:var(--muted); line-height:1.8; margin-bottom:32px; }
+
+.card-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px; }
+.card-tag {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.14em;
+  text-transform:uppercase; padding:5px 12px; border-radius:2px;
+  border:1px solid rgba(255,255,255,0.07); color:rgba(255,255,255,0.35);
+}
+
+.card-action {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--blue-neon); display:flex; align-items:center; gap:10px;
+  transition:gap 0.2s;
+}
+.toolkit-card:hover .card-action { gap:16px; }
+.card-action::after { content:'→'; }
+
+/* SOON CARD */
+.toolkit-card.soon-card { opacity:0.45; cursor:default; }
+.toolkit-card.soon-card:hover { background:var(--surface); border-color:var(--border); }
+.toolkit-card.soon-card::before { display:none; }
+
+/* SOBRE */
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+.about-block { padding:48px 44px; background:var(--surface); border:1px solid var(--border); }
+
+.about-block h3 { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; letter-spacing:-0.01em; margin-bottom:16px; }
+.about-block p { font-size:14px; color:var(--muted); line-height:1.85; }
+
+.pillar-list { display:flex; flex-direction:column; gap:20px; }
+.pillar { display:flex; gap:16px; align-items:flex-start; }
+.pillar-dot {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0; margin-top:2px;
+  background:rgba(45,125,210,0.1); border:1px solid rgba(45,125,210,0.3);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace; font-size:9px; color:var(--blue-neon);
+}
+.pillar-text { font-size:13px; color:var(--muted); line-height:1.7; }
+.pillar-text strong { color:var(--white); font-weight:500; display:block; margin-bottom:4px; font-size:14px; }
+
+/* FOOTER */
+footer {
+  padding:56px; display:grid; grid-template-columns:1fr auto 1fr;
+  align-items:center; gap:32px; border-top:1px solid var(--border);
+  position:relative; z-index:2;
+}
+.footer-brand { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.03em; }
+.footer-brand span { color:var(--blue-neon); text-shadow:0 0 12px rgba(77,166,255,0.4); }
+.footer-center { text-align:center; }
+.footer-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+.footer-links { text-align:right; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.1em; line-height:2.2; }
+.footer-links a { color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--blue-neon); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width:900px) {
+  nav { padding:16px 24px; }
+  .nav-tag { display:none; }
+  .wrap { padding:0 24px; }
+  .hero { padding:120px 0 80px; }
+  .hero h1 { font-size:clamp(44px,12vw,72px); }
+  .hero-stats { gap:28px; }
+  .toolkits-grid { grid-template-columns:1fr; }
+  .about-grid { grid-template-columns:1fr; }
+  footer { grid-template-columns:1fr; text-align:center; }
+  .footer-links { text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<div class="canvas-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<div class="grid-overlay"></div>
+<div class="grain"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Henrique<span>.</span> <span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:400;letter-spacing:0.14em;color:#2D7DD2;margin-left:10px;">@havelar.jr</span></div>
+  <div class="nav-tag">CX · Liderança · Tecnologia</div>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">Recursos exclusivos · @havelar.jr</div>
+    <h1>
+      Toolkit
+      <em>Hub</em>
+    </h1>
+    <p class="hero-sub">
+      Ferramentas, frameworks e guias práticos para <strong>gestores de CX, liderança e tecnologia.</strong> Tudo que uso e recomendo, organizado para você aplicar agora.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Toolkit ativo</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">03</div>
+        <div class="stat-label">Em breve</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Gratuito</div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#toolkits" class="btn-primary">Ver toolkits</a>
+      <a href="https://instagram.com/havelar.jr" target="_blank" class="btn-ghost">@havelar.jr →</a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- TOOLKITS -->
+<div class="wrap">
+  <div class="section" id="toolkits">
+    <div class="section-eyebrow">Biblioteca de recursos</div>
+    <h2 class="section-title">Toolkits disponíveis</h2>
+    <p class="section-desc">Cada toolkit é um guia completo e independente. Sem enrolação, sem teoria por teoria. Direto ao ponto.</p>
+
+    <div class="toolkits-grid">
+
+      <!-- GRANOLA — ativo -->
+      <a href="./granola-toolkit-v3.html" class="toolkit-card" style="--card-accent:#4ECDC4;">
+        <div class="card-watermark">G</div>
+        <div class="card-badge available">Disponível</div>
+        <div class="card-index">001</div>
+        <div class="card-title">Granola Toolkit</div>
+        <div class="card-desc">Guia completo para usar a Granola no potencial máximo. Conexão com Claude, Recipes prontos, 12 prompts e o fluxo que realmente entrega resultado nas suas reuniões.</div>
+        <div class="card-tags">
+          <span class="card-tag">Produtividade</span>
+          <span class="card-tag">IA</span>
+          <span class="card-tag">Reuniões</span>
+          <span class="card-tag">Claude</span>
+        </div>
+        <div class="card-action">Acessar toolkit</div>
+      </a>
+
+      <!-- EM BREVE 1 -->
+      <div class="toolkit-card soon-card">
+        <div class="card-watermark">CX</div>
+        <div class="card-badge soon">Em breve</div>
+        <div class="card-index">002</div>
+        <div class="card-title">CX Governance Toolkit</div>
+        <div class="card-desc">Framework completo de governança em CX: Health Score, rituais de performance, estrutura de OKR e modelo de maturidade operacional.</div>
+        <div class="card-tags">
+          <span class="card-tag">CX</span>
+          <span class="card-tag">Governança</span>
+          <span class="card-tag">OKR</span>
+        </div>
+      </div>
+
+      <!-- EM BREVE 2 -->
+      <div class="toolkit-card soon-card">
+        <div class="card-watermark">L</div>
+        <div class="card-badge soon">Em breve</div>
+        <div class="card-index">003</div>
+        <div class="card-title">Leadership System Toolkit</div>
+        <div class="card-desc">Sistema de gestão por dados: rituais de 1:1, PDI, 9Box, feedback direto e estrutura de desenvolvimento de lideranças intermediárias.</div>
+        <div class="card-tags">
+          <span class="card-tag">Liderança</span>
+          <span class="card-tag">Gestão</span>
+          <span class="card-tag">Performance</span>
+        </div>
+      </div>
+
+      <!-- EM BREVE 3 -->
+      <div class="toolkit-card soon-card">
+        <div class="card-watermark">AI</div>
+        <div class="card-badge soon">Em breve</div>
+        <div class="card-index">004</div>
+        <div class="card-title">AI in CX Toolkit</div>
+        <div class="card-desc">Como avaliar, adotar e escalar IA no CX. Framework ANCHOR, casos reais de mercado e critérios objetivos para decisão de ferramentas.</div>
+        <div class="card-tags">
+          <span class="card-tag">IA</span>
+          <span class="card-tag">CX</span>
+          <span class="card-tag">Automação</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SOBRE -->
+<div class="wrap">
+  <div class="section">
+    <div class="section-eyebrow">Contexto</div>
+    <h2 class="section-title">Por que esses recursos existem</h2>
+    <p class="section-desc">Mais de 10 anos construindo operações de CX. O que funciona de verdade raramente está em livro.</p>
+
+    <div class="about-grid">
+      <div class="about-block">
+        <h3>Sobre o projeto</h3>
+        <p>Esses toolkits são uma extensão do conteúdo que publico semanalmente no Instagram e LinkedIn. A ideia é simples: o que uso na prática como Head de CX na Asaas e o que construí em mais de uma década em operações, BPO e fintech, empacotado de forma que qualquer gestor possa aplicar hoje.</p>
+        <br>
+        <p>Sem teoria por teoria. Sem framework genérico. Tudo parte de problema real, causa raiz identificada e solução testada em operação.</p>
+      </div>
+      <div class="about-block">
+        <h3>Os três pilares de conteúdo</h3>
+        <div class="pillar-list">
+          <div class="pillar">
+            <div class="pillar-dot">01</div>
+            <div class="pillar-text">
+              <strong>Gestão de CX</strong>
+              Governança, dados, frameworks e modelos de maturidade operacional para líderes de Customer Experience.
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-dot">02</div>
+            <div class="pillar-text">
+              <strong>Liderança e Gestão</strong>
+              Sistema de gestão por dados, cultura de performance, desenvolvimento de times e decisão sob pressão.
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-dot">03</div>
+            <div class="pillar-text">
+              <strong>Tech e IA aplicados</strong>
+              IA no CX, automação inteligente, frameworks de adoção e visão crítica sobre tecnologia no negócio.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-sig">
+    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;letter-spacing:-0.04em;line-height:0.9;color:#F7F8FA;">Henrique<span style="color:#4da6ff;">.</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#2D7DD2;margin-top:6px;">@havelar.jr</div>
+  </div>
+  <div class="footer-center">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">Toolkit Hub · 2026</div>
+    <div class="footer-tag">CX · Liderança · Tecnologia · Gestão</div>
+  </div>
+  <div class="footer-links">
+    <a href="https://instagram.com/havelar.jr" target="_blank">Instagram</a><br>
+    <a href="https://linkedin.com/in/havelar-jr" target="_blank">LinkedIn</a>
+  </div>
+</footer>
+
+</body>
+</html>
