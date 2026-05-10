@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Granola Toolkit — por Hique</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0d1f1e;
+  --white: #f0f7f6;
+  --cream: #e2efee;
+  --green: #4ECDC4;
+  --green-dim: rgba(78,205,196,0.10);
+  --green-border: rgba(78,205,196,0.22);
+  --gray: #122423;
+  --gray-mid: #1e3533;
+  --gray-light: #6b9e9a;
+  --gray-text: #8fbfbb;
+  --accent: #2D7DD2;
+  --accent-dim: rgba(45,125,210,0.10);
+  --blue: #2D7DD2;
+  --blue-dim: rgba(45,125,210,0.10);
+  --teal-deep: #0d2b29;
+  --teal-mid: #143330;
+  --teal-surface: #1a3d3a;
+  --teal-border: rgba(78,205,196,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(78,205,196,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(45,125,210,0.05) 0%, transparent 50%);
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--teal-surface); border-radius: 2px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 56px;
+  background: rgba(13,31,30,0.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--teal-border);
+}
+
+.nav-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.nav-brand span { color: var(--green); }
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 140px 56px 80px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--teal-border);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(78,205,196,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(45,125,210,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px; height: 1px;
+  background: var(--green);
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(56px, 8.5vw, 116px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin-bottom: 40px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--green);
+  display: block;
+}
+
+.hero-bottom {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--gray-text);
+  max-width: 440px;
+  line-height: 1.75;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+}
+
+.stat {
+  text-align: right;
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  margin-top: 4px;
+}
+
+.hero-watermark {
+  position: absolute;
+  bottom: -20px; right: -20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 240px;
+  font-weight: 800;
+  color: rgba(78,205,196,0.04);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 96px 56px;
+  border-bottom: 1px solid var(--teal-border);
+}
+
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-eyebrow .num { color: rgba(78,205,196,0.2); }
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(30px, 3.5vw, 52px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.section-desc {
+  color: var(--gray-light);
+  max-width: 520px;
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 64px;
+}
+
+/* ── COMPARE ── */
+.compare-wrap {
+  overflow-x: auto;
+  border-radius: 4px;
+  border: 1px solid var(--teal-border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+thead th {
+  padding: 28px 28px 24px;
+  text-align: left;
+  border-bottom: 1px solid var(--teal-border);
+  border-right: 1px solid rgba(78,205,196,0.08);
+}
+thead th:last-child { border-right: none; }
+
+.th-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+}
+
+.th-tool {
+  background: var(--teal-deep);
+}
+
+.th-tool.featured {
+  background: rgba(78,205,196,0.06);
+  border-color: rgba(78,205,196,0.15) !important;
+}
+
+.tool-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.tool-name.green { color: var(--green); }
+
+.tool-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gray-light);
+  letter-spacing: 0.1em;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+
+tbody td {
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(78,205,196,0.06);
+  border-right: 1px solid rgba(78,205,196,0.06);
+  font-size: 13px;
+  color: var(--gray-text);
+  vertical-align: middle;
+}
+tbody td:last-child { border-right: none; }
+
+tbody td:first-child {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gray-light);
+  background: var(--teal-deep);
+  text-transform: uppercase;
+}
+
+tbody td.featured-col {
+  background: rgba(78,205,196,0.04);
+  color: var(--white);
+}
+
+.yes { color: var(--green); font-weight: 500; }
+.no { color: rgba(78,205,196,0.2); }
+.partial { color: var(--accent); }
+
+/* ── APOSTAS ── */
+.apostas {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 2px;
+}
+
+.aposta {
+  padding: 52px 44px;
+  background: var(--teal-deep);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: background 0.25s;
+}
+
+.aposta:hover { background: var(--teal-mid); }
+
+.aposta::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--green), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+.aposta:hover::after { transform: scaleX(1); }
+
+.aposta-index {
+  font-family: 'Syne', sans-serif;
+  font-size: 80px;
+  font-weight: 800;
+  color: rgba(78,205,196,0.08);
+  line-height: 1;
+  margin-bottom: 28px;
+}
+
+.aposta-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+.aposta-body {
+  font-size: 13px;
+  color: var(--gray-light);
+  line-height: 1.8;
+}
+
+.aposta-chip {
+  display: inline-block;
+  margin-top: 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  padding: 7px 14px;
+  border: 1px solid var(--green-border);
+  border-radius: 2px;
+}
+
+/* ── CLAUDE CONNECT ── */
+.claude-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.claude-intro {
+  padding: 64px;
+  background: rgba(78,205,196,0.05);
+  border: 1px solid var(--green-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.claude-intro h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.claude-intro p {
+  font-size: 14px;
+  color: var(--gray-light);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.claude-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--green-dim);
+  border: 1px solid var(--green-border);
+  border-radius: 100px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  margin-top: 8px;
+  width: fit-content;
+}
+
+.claude-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* ── PASSO A PASSO CONEXÃO ── */
+.connect-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.connect-step {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 32px 40px;
+  background: var(--teal-deep);
+  transition: background 0.2s;
+}
+
+.connect-step:hover { background: var(--teal-mid); }
+
+.step-n {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: rgba(78,205,196,0.12);
+  line-height: 1;
+  padding-top: 4px;
+}
+
+.step-body {}
+
+.step-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.step-desc {
+  font-size: 13px;
+  color: var(--gray-light);
+  line-height: 1.75;
+}
+
+.step-code {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: rgba(78,205,196,0.05);
+  border-left: 2px solid var(--green);
+  border-radius: 0 3px 3px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--green);
+  line-height: 1.6;
+}
+
+.step-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+.badge-orange { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(45,125,210,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(45,125,210,0.25); }
+.badge-gray { background: var(--teal-mid); color: var(--gray-light); border: 1px solid var(--teal-border); }
+
+/* ── PROMPTS ── */
+.prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 2px;
+}
+
+.prompt-card {
+  padding: 36px 40px;
+  background: var(--teal-deep);
+  transition: background 0.2s;
+}
+
+.prompt-card:hover { background: var(--teal-mid); }
+
+.prompt-category {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  margin-bottom: 16px;
+}
+
+.prompt-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.prompt-text {
+  padding: 16px 20px;
+  background: rgba(78,205,196,0.05);
+  border-left: 2px solid var(--green);
+  border-radius: 0 3px 3px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--gray-text);
+  line-height: 1.65;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.prompt-why {
+  font-size: 12px;
+  color: var(--gray-light);
+  line-height: 1.6;
+}
+
+/* ── RECIPES ── */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+}
+
+.recipe {
+  padding: 32px;
+  border: 1px solid var(--teal-border);
+  border-radius: 4px;
+  background: var(--teal-deep);
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.recipe:hover {
+  border-color: var(--green-border);
+  background: var(--teal-mid);
+}
+
+.recipe-icon {
+  font-size: 28px;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.recipe-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.recipe-desc {
+  font-size: 12px;
+  color: var(--gray-light);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.recipe-output {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.08em;
+}
+
+/* ── WORKFLOW APPS SCRIPT ── */
+.workflow-as {
+  padding: 48px;
+  background: var(--teal-deep);
+  border: 1px solid var(--teal-border);
+  border-radius: 4px;
+}
+
+.workflow-as-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.workflow-as-title::before {
+  content: '';
+  display: block;
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+}
+
+.as-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.as-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.as-num {
+  width: 28px; height: 28px;
+  background: var(--green-dim);
+  border: 1px solid var(--green-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.as-content {
+  font-size: 14px;
+  color: var(--gray-text);
+  line-height: 1.7;
+}
+
+.as-content strong {
+  color: var(--white);
+  font-weight: 500;
+}
+
+/* ── GLOSSARY ── */
+.glossary {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 2px;
+}
+
+.glossary-item {
+  padding: 32px 36px;
+  background: var(--teal-deep);
+}
+
+.glossary-term {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.glossary-def {
+  font-size: 13px;
+  color: var(--gray-light);
+  line-height: 1.7;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 56px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+  border-top: 1px solid var(--teal-border);
+}
+
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.footer-brand span { color: var(--green); }
+
+.footer-center {
+  text-align: center;
+}
+
+.footer-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+}
+
+.footer-links {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gray-light);
+  letter-spacing: 0.1em;
+  line-height: 2;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero, section { padding: 80px 24px; }
+  .hero h1 { font-size: clamp(44px,12vw,80px); }
+  .hero-bottom { grid-template-columns: 1fr; }
+  .hero-stats { justify-content: flex-start; }
+  .hero-watermark { display: none; }
+  .apostas, .claude-hero, .prompts-grid, .glossary { grid-template-columns: 1fr; }
+  .recipes-grid { grid-template-columns: repeat(2,1fr); }
+  .connect-step { grid-template-columns: 48px 1fr; }
+  .step-badge { display: none; }
+  .claude-intro { padding: 40px 28px; }
+  footer { grid-template-columns: 1fr; text-align: center; }
+  .footer-links { text-align: center; }
+  table { font-size: 12px; }
+  thead th, tbody td { padding: 14px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Hique<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#comparativo">Comparativo</a></li>
+    <li><a href="#apostas">Estratégia</a></li>
+    <li><a href="#conexao">Claude</a></li>
+    <li><a href="#recipes">Recipes</a></li>
+    <li><a href="#guia">Guia</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-eyebrow">Toolkit exclusivo · Granola Full Potential</div>
+  <h1>
+    Granola
+    <em>Toolkit</em>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      Guia completo para usar a Granola no potencial máximo. Conexão com Claude, Recipes configurados, prompts prontos e o fluxo que realmente entrega resultado.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Seções</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Prompts</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Recipes</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-watermark">G</div>
+</div>
+
+<!-- COMPARATIVO -->
+<section id="comparativo">
+  <div class="section-eyebrow">01 <span class="num">——</span> Panorama do mercado</div>
+  <h2 class="section-title">Granola vs Gemini vs Plaud</h2>
+  <p class="section-desc">Três ferramentas, três filosofias. Entenda qual resolve o seu problema antes de instalar qualquer coisa.</p>
+
+  <div class="compare-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="th-label">Critério</th>
+          <th class="th-tool featured">
+            <div class="tool-name green">Granola</div>
+            <div class="tool-tag">Desktop · Sem bot</div>
+          </th>
+          <th class="th-tool">
+            <div class="tool-name">Gemini</div>
+            <div class="tool-tag">Google Meet nativo</div>
+          </th>
+          <th class="th-tool">
+            <div class="tool-name">Plaud</div>
+            <div class="tool-tag">Hardware · Offline</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sem bot visível</td>
+          <td class="featured-col"><span class="yes">✓</span> Invisível na reunião</td>
+          <td><span class="yes">✓</span> Nativo no Meet</td>
+          <td><span class="yes">✓</span> Dispositivo físico</td>
+        </tr>
+        <tr>
+          <td>Reunião presencial</td>
+          <td class="featured-col"><span class="no">—</span> Apenas online</td>
+          <td><span class="no">—</span> Apenas online</td>
+          <td><span class="yes">✓</span> Principal diferencial</td>
+        </tr>
+        <tr>
+          <td>Instalação</td>
+          <td class="featured-col"><span class="yes">✓</span> App Mac / Windows</td>
+          <td><span class="partial">~</span> Workspace pago</td>
+          <td><span class="partial">~</span> Hardware + app</td>
+        </tr>
+        <tr>
+          <td>Conecta com Claude</td>
+          <td class="featured-col"><span class="yes">✓</span> Nativo e profundo</td>
+          <td><span class="no">—</span> Não disponível</td>
+          <td><span class="yes">✓</span> Via plataforma</td>
+        </tr>
+        <tr>
+          <td>Recipes / Templates</td>
+          <td class="featured-col"><span class="yes">✓</span> Nativo e customizável</td>
+          <td><span class="no">—</span> Limitado</td>
+          <td><span class="partial">~</span> Templates prontos</td>
+        </tr>
+        <tr>
+          <td>Conversa com reuniões</td>
+          <td class="featured-col"><span class="yes">✓</span> Chat via Claude</td>
+          <td><span class="partial">~</span> Básico</td>
+          <td><span class="no">—</span> Não disponível</td>
+        </tr>
+        <tr>
+          <td>Preço de entrada</td>
+          <td class="featured-col">Free / $14 por mês</td>
+          <td>+$20 por usuário/mês</td>
+          <td>Hardware + plano mensal</td>
+        </tr>
+        <tr>
+          <td>Melhor para</td>
+          <td class="featured-col">Executivos em reuniões online sensíveis</td>
+          <td>Times 100% no Google Meet</td>
+          <td>Líderes com muita reunião presencial</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 3 APOSTAS -->
+<section id="apostas">
+  <div class="section-eyebrow">02 <span class="num">——</span> Estratégia de produto</div>
+  <h2 class="section-title">As 3 apostas que ninguém fez</h2>
+  <p class="section-desc">O sucesso da Granola não foi sorte. Foram três decisões que iam contra o consenso do mercado.</p>
+
+  <div class="apostas">
+    <div class="aposta">
+      <div class="aposta-index">01</div>
+      <div class="aposta-title">Um ano em stealth. Só o melhor.</div>
+      <div class="aposta-body">Enquanto o mercado corria para lançar MVPs pela metade, a Granola ficou um ano em modo stealth. Só trouxeram para fora o que tinham de mais poderoso na plataforma. Sem lançamento prematuro. Sem versão incompleta. A paciência foi a estratégia.</div>
+      <div class="aposta-chip">Paciência estratégica</div>
+    </div>
+    <div class="aposta">
+      <div class="aposta-index">02</div>
+      <div class="aposta-title">Contra o mercado em dois movimentos.</div>
+      <div class="aposta-body">Apostaram que o custo de transcrição por IA ia despencar quando todo mundo achava caro demais. E recusaram o modelo de bot nas reuniões quando era exatamente isso que todos estavam fazendo. Dois zigs no mesmo momento, na direção oposta ao consenso.</div>
+      <div class="aposta-chip">Visão de longo prazo</div>
+    </div>
+    <div class="aposta">
+      <div class="aposta-index">03</div>
+      <div class="aposta-title">Apostar no que não é consenso.</div>
+      <div class="aposta-body">Quando o mercado chegou onde a Granola já estava, o usuário já estava viciado num padrão de qualidade que ninguém conseguia igualar. O nome virou verbo. "Me granola essa reunião" passou a ser frase real nas empresas. Isso é product-market fit de outro nível.</div>
+      <div class="aposta-chip">Product-market fit</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONEXÃO COM CLAUDE -->
+<section id="conexao">
+  <div class="section-eyebrow">03 <span class="num">——</span> Granola + Claude</div>
+  <h2 class="section-title">Como conectar e usar de verdade</h2>
+  <p class="section-desc">A conexão com Claude transforma a Granola de ferramenta de notas em uma base de inteligência conversável sobre tudo que acontece nas suas reuniões.</p>
+
+  <div class="claude-hero">
+    <div class="claude-intro">
+      <div>
+        <h3>O que muda quando Claude está ativo</h3>
+        <p>Sem Claude, a Granola registra. Com Claude, ela raciocina. Você passa a conseguir fazer perguntas sobre o que foi dito, cruzar informações entre reuniões diferentes, identificar padrões e gerar documentos a partir do conteúdo real das conversas.</p>
+        <p>É a diferença entre ter um arquivo e ter um assistente que leu todos os seus arquivos.</p>
+      </div>
+      <div class="claude-badge">Claude conectado e ativo</div>
+    </div>
+    <div style="padding: 48px; background: var(--teal-deep); display: flex; flex-direction: column; justify-content: center;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-light); margin-bottom: 20px;">O que você passa a fazer</div>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="color: var(--green); font-size: 14px; margin-top: 2px;">→</span>
+          <span style="font-size: 13px; color: var(--gray-text); line-height: 1.6;">Perguntar sobre decisões específicas tomadas em qualquer reunião passada</span>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="color: var(--green); font-size: 14px; margin-top: 2px;">→</span>
+          <span style="font-size: 13px; color: var(--gray-text); line-height: 1.6;">Cruzar o que foi dito em reuniões diferentes sobre o mesmo tema</span>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="color: var(--green); font-size: 14px; margin-top: 2px;">→</span>
+          <span style="font-size: 13px; color: var(--gray-text); line-height: 1.6;">Gerar e-mails de follow-up com base no que foi combinado</span>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="color: var(--green); font-size: 14px; margin-top: 2px;">→</span>
+          <span style="font-size: 13px; color: var(--gray-text); line-height: 1.6;">Extrair riscos e bloqueios mencionados informalmente</span>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="color: var(--green); font-size: 14px; margin-top: 2px;">→</span>
+          <span style="font-size: 13px; color: var(--gray-text); line-height: 1.6;">Preparar pautas de próximas reuniões com base no histórico</span>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="color: var(--green); font-size: 14px; margin-top: 2px;">→</span>
+          <span style="font-size: 13px; color: var(--gray-text); line-height: 1.6;">Gerar atas executivas formatadas prontas para envio</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSO A PASSO CONEXÃO -->
+  <div style="margin-top: 2px;">
+    <div style="padding: 32px 40px; background: var(--teal-deep); border-bottom: 2px solid var(--green);">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--green);">Passo a passo · Conexão Granola com Claude</div>
+    </div>
+
+    <div class="connect-steps">
+      <div class="connect-step">
+        <div class="step-n">01</div>
+        <div class="step-body">
+          <div class="step-title">Instale a Granola no seu computador</div>
+          <div class="step-desc">Acesse <strong>granola.so</strong> e baixe o app para Mac ou Windows. O app roda nativamente, sem extensão de browser. Na primeira abertura, crie sua conta com e-mail ou Google.</div>
+          <div class="step-code">granola.so → Download → Instalar → Criar conta</div>
+        </div>
+        <div class="step-badge badge-green">Instalação</div>
+      </div>
+
+      <div class="connect-step">
+        <div class="step-n">02</div>
+        <div class="step-body">
+          <div class="step-title">Libere a permissão de áudio do sistema</div>
+          <div class="step-desc">Na primeira configuração, o app vai pedir permissão para capturar o áudio do sistema operacional. Essa é a permissão que garante a captura sem bot. No Mac vai em <strong>Preferências do Sistema → Privacidade → Microfone</strong>. No Windows o próprio app guia o processo.</div>
+        </div>
+        <div class="step-badge badge-green">Configuração</div>
+      </div>
+
+      <div class="connect-step">
+        <div class="step-n">03</div>
+        <div class="step-body">
+          <div class="step-title">Acesse as Integrações e ative o Claude</div>
+          <div class="step-desc">Dentro do app, clique no seu avatar ou menu de configurações no canto superior. Vá em <strong>Settings → Integrations</strong>. Você vai ver a opção de conectar com Claude, da Anthropic. Clique em <strong>"Connect"</strong> e siga o fluxo de autorização.</div>
+          <div class="step-code">Settings → Integrations → Claude → Connect → Autorizar</div>
+        </div>
+        <div class="step-badge badge-orange">Integração</div>
+      </div>
+
+      <div class="connect-step">
+        <div class="step-n">04</div>
+        <div class="step-body">
+          <div class="step-title">Você vai precisar de uma conta no Claude</div>
+          <div class="step-desc">Para a integração funcionar, é necessário ter uma conta ativa no <strong>claude.ai</strong>. O plano gratuito já permite a conexão. Para uso intenso e conversas mais longas com reuniões, o plano Pro em <strong>$20 por mês</strong> é o recomendado. Crie em claude.ai antes de voltar para a Granola.</div>
+          <div class="step-code">claude.ai → Criar conta → Plano Free ou Pro</div>
+        </div>
+        <div class="step-badge badge-orange">Conta Claude</div>
+      </div>
+
+      <div class="connect-step">
+        <div class="step-n">05</div>
+        <div class="step-body">
+          <div class="step-title">Teste a conexão com uma reunião existente</div>
+          <div class="step-desc">Após conectar, abra qualquer reunião já registrada na Granola. No painel lateral ou abaixo das notas, aparece o campo de <strong>chat com IA</strong>. Digite uma pergunta sobre a reunião, por exemplo: <em>"Quais foram as decisões tomadas nessa reunião?"</em>. Se Claude responder com contexto real da conversa, a conexão está funcionando.</div>
+          <div class="step-code">"Quais foram as decisões tomadas nessa reunião?"</div>
+        </div>
+        <div class="step-badge badge-blue">Teste</div>
+      </div>
+
+      <div class="connect-step">
+        <div class="step-n">06</div>
+        <div class="step-body">
+          <div class="step-title">Ative o modelo correto nas configurações</div>
+          <div class="step-desc">Dentro das configurações de IA da Granola, você pode escolher qual modelo usar. Selecione <strong>Claude Sonnet</strong> para o melhor equilíbrio entre velocidade e qualidade de resposta. O Claude Opus está disponível para análises mais complexas e profundas, porém é mais lento.</div>
+          <div class="step-code">Settings → AI Model → Claude Sonnet (recomendado)</div>
+        </div>
+        <div class="step-badge badge-blue">Modelo</div>
+      </div>
+
+      <div class="connect-step">
+        <div class="step-n">07</div>
+        <div class="step-body">
+          <div class="step-title">Configure o Claude como modelo padrão</div>
+          <div class="step-desc">Para não precisar selecionar toda vez, defina o Claude como modelo padrão para geração de notas e Recipes. Vá em <strong>Settings → Default AI → Claude</strong>. A partir daí todas as notas geradas automaticamente após reuniões vão usar Claude como motor principal.</div>
+          <div class="step-code">Settings → Default AI → Claude → Salvar</div>
+        </div>
+        <div class="step-badge badge-gray">Padrão</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMPTS -->
+<section>
+  <div class="section-eyebrow">04 <span class="num">——</span> Prompts que funcionam</div>
+  <h2 class="section-title">12 prompts prontos para usar agora</h2>
+  <p class="section-desc">Cole diretamente no chat da Granola após cada reunião. Organizados por contexto de uso.</p>
+
+  <div class="prompts-grid">
+    <div class="prompt-card">
+      <div class="prompt-category">Resumo executivo</div>
+      <div class="prompt-title">Decisões e responsáveis</div>
+      <div class="prompt-text">"Quais foram as 3 principais decisões tomadas nessa reunião e quem é responsável por cada uma?"</div>
+      <div class="prompt-why">Use imediatamente após reuniões de alinhamento ou revisão de projeto.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Follow-up</div>
+      <div class="prompt-title">E-mail de encerramento</div>
+      <div class="prompt-text">"Gere um e-mail de follow-up para todos os participantes com as ações definidas, responsáveis e prazos mencionados na reunião."</div>
+      <div class="prompt-why">Economiza 15 minutos de redação por reunião e padroniza a comunicação pós-call.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Análise histórica</div>
+      <div class="prompt-title">Cruzamento entre reuniões</div>
+      <div class="prompt-text">"Compare o que foi dito hoje com a reunião da semana passada sobre o mesmo tema. O que mudou na posição do time?"</div>
+      <div class="prompt-why">Ideal para acompanhar evolução de projetos ou mudanças de posicionamento ao longo do tempo.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Gestão de risco</div>
+      <div class="prompt-title">Extração de bloqueios</div>
+      <div class="prompt-text">"Quais riscos ou bloqueios foram mencionados durante essa conversa, mesmo que de forma informal ou passageira?"</div>
+      <div class="prompt-why">Captura o que fica nas entrelinhas e não entra nas atas tradicionais.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Preparação</div>
+      <div class="prompt-title">Pauta da próxima reunião</div>
+      <div class="prompt-text">"Com base nessa reunião, quais pontos precisam obrigatoriamente ser retomados no próximo encontro com esse time?"</div>
+      <div class="prompt-why">Garante continuidade e evita que itens importantes se percam entre sessões.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Liderança</div>
+      <div class="prompt-title">Análise de 1:1</div>
+      <div class="prompt-text">"Identifique os compromissos que esse liderado assumiu, os pontos de desenvolvimento mencionados e os próximos passos combinados."</div>
+      <div class="prompt-why">Transforma conversas de 1:1 em registro estruturado de PDI e acompanhamento.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Comunicação</div>
+      <div class="prompt-title">Ata executiva</div>
+      <div class="prompt-text">"Gere uma ata executiva dessa reunião com: contexto, participantes, decisões, ações e próximos passos. Formato limpo para envio por e-mail."</div>
+      <div class="prompt-why">Pronto para copiar e colar. Elimina a redação manual de atas para toda a equipe.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Cliente</div>
+      <div class="prompt-title">Resumo de reunião comercial</div>
+      <div class="prompt-text">"Quais foram as principais dores levantadas pelo cliente, as objeções mencionadas e os próximos passos que eu preciso executar?"</div>
+      <div class="prompt-why">Estrutura o output de calls de vendas e customer success de forma imediata.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Gestão</div>
+      <div class="prompt-title">Status de projeto</div>
+      <div class="prompt-text">"Com base nessa reunião, qual é o status atual do projeto, o que está em risco e o que precisa de decisão imediata?"</div>
+      <div class="prompt-why">Gera um briefing de status pronto para atualizar stakeholders ou superiores.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Padrões</div>
+      <div class="prompt-title">Análise de múltiplas reuniões</div>
+      <div class="prompt-text">"Analise as últimas 5 reuniões com esse time e identifique padrões recorrentes de problemas ou temas que aparecem repetidamente."</div>
+      <div class="prompt-why">Revela gargalos sistêmicos que não aparecem em análises reunião por reunião.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Onboarding</div>
+      <div class="prompt-title">Resumo para quem não participou</div>
+      <div class="prompt-text">"Escreva um resumo dessa reunião para alguém que não participou mas precisa estar alinhado. Máximo de 5 parágrafos, linguagem direta."</div>
+      <div class="prompt-why">Resolve o problema de alinhamento assíncrono sem exigir redação manual.</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-category">Reflexão</div>
+      <div class="prompt-title">O que não foi dito</div>
+      <div class="prompt-text">"Com base no que foi discutido, existe algum tema importante que deveria ter sido abordado mas não foi? Quais lacunas ficaram abertas?"</div>
+      <div class="prompt-why">Prompt avançado para análise crítica de reuniões estratégicas e decisões de liderança.</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECIPES -->
+<section id="recipes">
+  <div class="section-eyebrow">05 <span class="num">——</span> Recipes em detalhe</div>
+  <h2 class="section-title">Templates prontos. Use agora.</h2>
+  <p class="section-desc">Os Recipes são o recurso mais subutilizado da Granola. Cada um estrutura o output de uma reunião no formato ideal para aquele contexto.</p>
+
+  <div class="recipes-grid">
+    <div class="recipe">
+      <span class="recipe-icon">🚀</span>
+      <div class="recipe-name">Kickoff de Projeto</div>
+      <div class="recipe-desc">Extrai escopo, responsáveis, prazos, dependências e riscos da conversa de abertura de qualquer iniciativa. Ideal para alinhar times no início de projetos.</div>
+      <div class="recipe-output">Output → Escopo · Owners · Prazos · Riscos</div>
+    </div>
+
+    <div class="recipe">
+      <span class="recipe-icon">🎯</span>
+      <div class="recipe-name">1:1 de Liderança</div>
+      <div class="recipe-desc">Captura feedbacks dados e recebidos, decisões tomadas, compromissos assumidos e próximos passos. Mantém histórico estruturado de cada liderado ao longo do tempo.</div>
+      <div class="recipe-output">Output → Feedbacks · Compromissos · PDI · Next steps</div>
+    </div>
+
+    <div class="recipe">
+      <span class="recipe-icon">🔍</span>
+      <div class="recipe-name">Entrevista</div>
+      <div class="recipe-desc">Organiza respostas, padrões e insights de entrevistas com clientes, candidatos ou usuários. Estruturado para análise comparativa entre múltiplas sessões.</div>
+      <div class="recipe-output">Output → Respostas · Padrões · Insights · Gaps</div>
+    </div>
+
+    <div class="recipe">
+      <span class="recipe-icon">📊</span>
+      <div class="recipe-name">Review de Performance</div>
+      <div class="recipe-desc">Estrutura avaliações periódicas com pontos fortes identificados, gaps de desenvolvimento, metas estabelecidas e plano de ação definido na conversa.</div>
+      <div class="recipe-output">Output → Fortes · Gaps · Metas · Plano de ação</div>
+    </div>
+
+    <div class="recipe">
+      <span class="recipe-icon">💼</span>
+      <div class="recipe-name">Reunião Comercial</div>
+      <div class="recipe-desc">Extrai dores do cliente, objeções levantadas, contexto da negociação e próximos passos necessários. Pronto para alimentar CRM e fluxo de vendas.</div>
+      <div class="recipe-output">Output → Dores · Objeções · Negociação · Follow-up</div>
+    </div>
+
+    <div class="recipe">
+      <span class="recipe-icon">⚙️</span>
+      <div class="recipe-name">Recipe Customizado</div>
+      <div class="recipe-desc">Crie seu próprio template para o contexto específico da sua operação. Qualquer formato recorrente de reunião pode virar um Recipe salvo e reutilizável com um clique.</div>
+      <div class="recipe-output">Output → Definido por você · Salvo · Reutilizável</div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIA DE USO -->
+<section id="guia">
+  <div class="section-eyebrow">06 <span class="num">——</span> Guia de uso</div>
+  <h2 class="section-title">Do zero ao full potential</h2>
+  <p class="section-desc">O fluxo completo de uso diário para extrair o máximo da Granola com Claude e Recipes ativos.</p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 2px;">
+    <div style="padding: 48px; background: var(--teal-deep);">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-light); margin-bottom: 28px;">Antes da reunião</div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">1</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Abra a Granola antes de entrar na call</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">O app precisa estar rodando para capturar o áudio desde o início. Não adianta abrir no meio da reunião.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">2</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Selecione o Recipe antes de começar</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Escolha o template adequado para o tipo de reunião. Isso guia o que a IA vai priorizar no output.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">3</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Escreva o contexto inicial no scratchpad</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Coloque objetivo da reunião e participantes. Isso melhora significativamente a qualidade das notas geradas.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 48px; background: var(--teal-deep);">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-light); margin-bottom: 28px;">Durante a reunião</div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">4</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Anote apenas o que julgou importante</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Não precisa anotar tudo. A IA captura o áudio. Anote decisões, nomes, números e o que chamou sua atenção. Isso melhora a precisão do output.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">5</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Mantenha o app visível em segundo monitor</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Se tiver dois monitores, deixe a Granola no secundário para acompanhar a transcrição em tempo real e corrigir erros de nome ou termo técnico.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px;">
+    <div style="padding: 48px; background: var(--teal-deep);">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-light); margin-bottom: 28px;">Logo após a reunião</div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">6</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Aplique o Recipe e revise o output</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">A Granola gera o documento em menos de 1 minuto. Revise rapidamente e corrija qualquer dado incorreto antes de usar ou compartilhar.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">7</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Use Claude para gerar o follow-up</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Cole o prompt de e-mail de encerramento no chat. Ajuste nomes e tom se necessário. Copie e envie. Processo completo em menos de 3 minutos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 48px; background: var(--teal-deep);">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-light); margin-bottom: 28px;">Uso estratégico semanal</div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">8</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Revise padrões com o prompt de análise múltipla</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Uma vez por semana, use o prompt de análise de múltiplas reuniões. Ele revela padrões e gargalos que não aparecem em análises isoladas.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <div style="width: 24px; height: 24px; background: var(--green-dim); border: 1px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); flex-shrink: 0; margin-top: 2px;">9</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">Use como memória institucional</div>
+            <div style="font-size: 12px; color: var(--gray-light); line-height: 1.6;">Antes de qualquer reunião importante, pergunte ao Claude o que foi discutido anteriormente com aquela pessoa ou time. Você entra preparado com contexto real.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSÁRIO -->
+<section>
+  <div class="section-eyebrow">07 <span class="num">——</span> Glossário</div>
+  <h2 class="section-title">Termos que você vai encontrar</h2>
+  <p class="section-desc">Referência rápida para navegar o ecossistema Granola sem dúvidas.</p>
+
+  <div class="glossary">
+    <div class="glossary-item">
+      <div class="glossary-term">Recipe</div>
+      <div class="glossary-def">Template de output aplicado sobre a transcrição de uma reunião. Define o formato, os campos e o nível de detalhe do documento gerado pela IA.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Scratchpad</div>
+      <div class="glossary-def">Área de rascunho dentro da Granola onde você digita notas durante a reunião. O conteúdo que você escreve aqui é combinado com o áudio para gerar o output final.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">System Audio Capture</div>
+      <div class="glossary-def">Tecnologia que captura o áudio diretamente do sistema operacional, sem precisar de microfone externo nem de bot entrando na reunião. É o coração da proposta da Granola.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Bot-free</div>
+      <div class="glossary-def">Abordagem em que nenhum participante virtual é adicionado à reunião para gravar. A captura acontece de forma invisível, sem notificação para os outros participantes.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Chat com IA</div>
+      <div class="glossary-def">Interface de conversa disponível dentro de cada reunião registrada. É por aqui que você faz perguntas sobre o conteúdo da reunião usando Claude como motor.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Stealth Mode</div>
+      <div class="glossary-def">Estratégia adotada pela Granola no início do desenvolvimento. A empresa operou por cerca de um ano sem lançamento público, focando em construir o produto certo antes de escalar.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Hique<span>.</span></div>
+  <div class="footer-center">
+    <div style="font-family: 'Syne', sans-serif; font-size: 13px; color: var(--gray-light); margin-bottom: 6px;">Granola Toolkit · 2026</div>
+    <div class="footer-tag">Liderança · CX · Tecnologia · Gestão</div>
+  </div>
+  <div class="footer-links">
+    granola.so<br>
+    claude.ai
+  </div>
+</footer>
+
+</body>
+</html>
