@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CX Power Rankings · Modelo Demonstrativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1A2FFF;
+    --blue-light: #5B8BFF;
+    --blue-dark: #060F3D;
+    --off-white: #F5F3EE;
+    --white: #FFFFFF;
+    --red: #CC2200;
+    --green: #22944F;
+    --muted: #6B6B7A;
+    --border: rgba(26,47,255,0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--blue-dark); font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4, h5, .mono { font-family: 'Space Grotesk', sans-serif; }
+
+  .cover { background: var(--blue); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 64px 80px; position: relative; overflow: hidden; }
+  .cover-deco { position: absolute; inset: 0; pointer-events: none; }
+  .cover-deco-arc { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.07); }
+  .cover-logo { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: rgba(245,243,238,.6); }
+  .cover-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 64px 0 48px; }
+  .cover-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .28em; text-transform: uppercase; color: rgba(245,243,238,.45); margin-bottom: 28px; }
+  .cover-title { font-size: clamp(72px, 10vw, 120px); font-weight: 700; line-height: .93; letter-spacing: -.025em; color: var(--off-white); margin-bottom: 32px; }
+  .cover-tag { display: inline-block; border: 1px solid rgba(245,243,238,.25); padding: 6px 18px; font-size: 10px; font-weight: 500; letter-spacing: .25em; text-transform: uppercase; color: rgba(245,243,238,.55); align-self: flex-start; }
+  .cover-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+  .cover-meta { display: flex; gap: 56px; }
+  .cover-meta-item .lbl { font-size: 8px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(245,243,238,.4); margin-bottom: 4px; }
+  .cover-meta-item .val { font-size: 13px; color: rgba(245,243,238,.8); }
+  .cover-kpi { text-align: right; }
+  .cover-kpi .lbl { font-size: 9px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(245,243,238,.4); margin-bottom: 6px; }
+  .cover-kpi .num { font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 700; color: var(--off-white); line-height: 1; }
+  .cover-kpi .sub { font-size: 11px; color: rgba(245,243,238,.4); margin-top: 4px; }
+
+  .report { max-width: 1100px; margin: 0 auto; padding: 0 80px 120px; }
+  .sh { display: flex; align-items: center; gap: 20px; padding: 80px 0 36px; }
+  .sh-num { font-weight: 700; font-size: 88px; line-height: 1; color: rgba(26,47,255,.08); letter-spacing: -.03em; min-width: 64px; }
+  .sh-label { border-left: 3px solid var(--blue); padding-left: 20px; }
+  .sh-eye { font-size: 9px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: var(--blue); margin-bottom: 2px; }
+  .sh-title { font-size: 30px; font-weight: 700; letter-spacing: -.02em; color: var(--blue-dark); line-height: 1; }
+  .sh-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: rgba(26,47,255,.06); }
+  .g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: rgba(26,47,255,.06); }
+  .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; background: rgba(26,47,255,.06); }
+  .full { grid-column: 1 / -1; }
+  .cell { background: var(--white); padding: 24px 28px; }
+  .cell-lbl { font-size: 9px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+  .cell-body { font-size: 13px; line-height: 1.7; color: rgba(6,15,61,.7); }
+  .cell-body.strong { font-size: 14px; font-weight: 600; color: var(--blue-dark); line-height: 1.6; }
+
+  .lc { background: var(--white); border: 1px solid rgba(26,47,255,.1); border-left: 4px solid var(--blue); padding: 36px 44px; font-size: 15px; font-weight: 300; line-height: 1.85; color: rgba(6,15,61,.78); position: relative; }
+  .lc::before { content: '"'; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 110px; color: var(--blue); opacity: .05; position: absolute; top: 8px; left: 18px; line-height: 1; pointer-events: none; }
+  .lc p + p { margin-top: 14px; }
+
+  .rank-card { background: var(--white); padding: 36px 28px; position: relative; overflow: hidden; }
+  .rank-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .rank-card.gold::before { background: var(--blue); }
+  .rank-card.silver::before { background: var(--blue-light); }
+  .rank-card.bronze::before { background: rgba(26,47,255,.25); }
+  .rank-ghost { font-weight: 700; font-size: 88px; line-height: 1; letter-spacing: -.04em; position: absolute; top: 16px; right: 20px; opacity: .06; color: var(--blue); }
+  .rank-medal { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+  .rank-medal.gold { background: var(--blue); color: #fff; }
+  .rank-medal.silver { background: var(--blue-light); color: #fff; }
+  .rank-medal.bronze { background: rgba(26,47,255,.18); color: var(--blue); }
+  .rank-name { font-size: 20px; font-weight: 700; letter-spacing: -.01em; color: var(--blue-dark); margin-bottom: 4px; }
+  .rank-tag { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  .rank-list { list-style: none; }
+  .rank-list li { font-size: 12px; color: rgba(6,15,61,.65); padding: 5px 0 5px 16px; position: relative; line-height: 1.55; border-bottom: 1px solid rgba(26,47,255,.05); }
+  .rank-list li:last-child { border-bottom: none; }
+  .rank-list li::before { content: '—'; position: absolute; left: 0; color: var(--blue); font-size: 9px; top: 7px; }
+
+  .num-card { background: var(--white); padding: 28px 22px; }
+  .num-lbl { font-size: 8px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+  .num-val { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 32px; letter-spacing: -.02em; line-height: 1; margin-bottom: 6px; }
+  .num-val.pos { color: var(--green); } .num-val.neg { color: var(--red); } .num-val.neu { color: var(--blue); }
+  .num-delta { font-size: 10px; font-weight: 600; margin-bottom: 4px; }
+  .num-delta.up { color: var(--green); } .num-delta.down { color: var(--red); }
+  .num-note { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  .hist-bar { background: var(--blue); padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .hist-bar-info .lbl { font-size: 8px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(245,243,238,.5); margin-bottom: 4px; }
+  .hist-bar-info .sub { font-size: 14px; font-weight: 600; color: var(--off-white); }
+  .hist-kpis { display: flex; gap: 36px; text-align: center; }
+  .hist-kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: var(--off-white); line-height: 1; }
+  .hist-kpi-lbl { font-size: 8px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(245,243,238,.45); margin-top: 3px; }
+  .hist-months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; background: rgba(26,47,255,.06); }
+  .hist-month { background: var(--off-white); padding: 14px 16px; text-align: center; }
+  .hist-month.current { background: var(--blue); }
+  .hist-month .m-lbl { font-size: 8px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .hist-month.current .m-lbl { color: rgba(245,243,238,.55); }
+  .hist-month .m-val { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; }
+  .hist-month.current .m-val { color: var(--off-white); }
+
+  .watch-card { background: var(--white); padding: 24px 22px; }
+  .watch-cell-lbl { font-size: 8px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .watch-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+  .watch-table th { font-size: 8px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 5px 0; border-bottom: 1px solid rgba(26,47,255,.1); }
+  .watch-table td { font-size: 11px; color: var(--blue-dark); padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,.04); }
+  .watch-note { font-size: 11px; color: rgba(6,15,61,.58); line-height: 1.6; font-style: italic; }
+
+  .pm-card { background: var(--white); padding: 32px 36px; }
+  .pm-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .pm-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+  .pm-icon.plus { background: rgba(34,148,79,.12); color: var(--green); border: 1px solid rgba(34,148,79,.2); }
+  .pm-icon.minus { background: rgba(204,34,0,.08); color: var(--red); border: 1px solid rgba(204,34,0,.2); }
+  .pm-title { font-size: 15px; font-weight: 700; }
+  .pc .pm-title { color: var(--green); } .mc .pm-title { color: var(--red); }
+  .pm-items { display: flex; flex-direction: column; gap: 10px; }
+  .pm-item { padding: 11px 14px; font-size: 12px; line-height: 1.65; }
+  .pi { background: rgba(34,148,79,.06); border-left: 2px solid rgba(34,148,79,.4); color: rgba(6,15,61,.75); }
+  .mi { background: rgba(204,34,0,.05); border-left: 2px solid rgba(204,34,0,.3); color: rgba(6,15,61,.75); }
+  .pm-tag { font-size: 8px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 3px; }
+  .pi .pm-tag { color: var(--green); } .mi .pm-tag { color: var(--red); }
+
+  .hl-card { background: var(--white); padding: 24px 22px; }
+  .hl-cell { font-size: 8px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  .hl-type { font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+  .hl-card.high .hl-type { color: var(--green); } .hl-card.low .hl-type { color: var(--red); }
+  .hl-item { font-size: 11px; color: rgba(6,15,61,.7); padding: 7px 11px; margin-bottom: 5px; line-height: 1.5; }
+  .hl-card.high .hl-item { border-left: 2px solid rgba(34,148,79,.35); background: rgba(34,148,79,.05); }
+  .hl-card.low .hl-item { border-left: 2px solid rgba(204,34,0,.3); background: rgba(204,34,0,.04); }
+
+  .wtw-card { background: var(--white); padding: 24px 22px; }
+  .wtw-lbl { font-size: 8px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 10px; }
+  .wtw-card.risk .wtw-lbl { color: var(--red); } .wtw-card.opp .wtw-lbl { color: var(--green); } .wtw-card.dep .wtw-lbl { color: var(--blue-light); }
+  .wtw-title { font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 14px; }
+  .wtw-item { padding: 9px 12px; font-size: 11px; color: rgba(6,15,61,.68); line-height: 1.55; margin-bottom: 5px; }
+  .wtw-card.risk .wtw-item { border-left: 2px solid rgba(204,34,0,.3); background: rgba(204,34,0,.04); }
+  .wtw-card.opp .wtw-item { border-left: 2px solid rgba(34,148,79,.3); background: rgba(34,148,79,.04); }
+  .wtw-card.dep .wtw-item { border-left: 2px solid rgba(26,47,255,.25); background: rgba(26,47,255,.03); }
+
+  .act-table { width: 100%; border-collapse: collapse; background: var(--white); }
+  .act-table th { font-size: 8px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(26,47,255,.1); background: var(--off-white); }
+  .act-table td { padding: 11px 16px; font-size: 12px; color: rgba(6,15,61,.68); border-bottom: 1px solid rgba(26,47,255,.07); vertical-align: top; line-height: 1.5; }
+  .act-table tr:last-child td { border-bottom: none; }
+  .div-row td { background: rgba(26,47,255,.08) !important; font-size: 8px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--blue); padding: 9px 16px; }
+  .sb { display: inline-block; padding: 2px 8px; border-radius: 2px; font-size: 8px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  .sb.and { background: rgba(34,148,79,.1); color: var(--green); } .sb.ini { background: rgba(26,47,255,.08); color: var(--blue); }
+  .sb.new { background: rgba(107,107,122,.1); color: var(--muted); } .sb.pend { background: rgba(204,34,0,.08); color: var(--red); }
+
+  .okr-bar { background: var(--blue); padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+  .okr-bar-info .lbl { font-size: 8px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(245,243,238,.5); margin-bottom: 4px; }
+  .okr-bar-info .sub { font-size: 15px; font-weight: 600; color: var(--off-white); }
+  .okr-kpis { display: flex; gap: 36px; text-align: center; }
+  .okr-kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--off-white); line-height: 1; }
+  .okr-kpi-val.yellow { color: #E8A000; } .okr-kpi-val.green { color: #4CAF50; }
+  .okr-kpi-lbl { font-size: 8px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(245,243,238,.45); margin-top: 3px; }
+  .okr-block { margin-bottom: 2px; }
+  .okr-head { background: rgba(26,47,255,.08); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; border-left: 3px solid var(--blue); }
+  .okr-head-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); flex: 1; line-height: 1.4; }
+  .okr-type { font-size: 8px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-left: 16px; white-space: nowrap; }
+  .kr-row { background: var(--white); padding: 11px 28px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(26,47,255,.07); }
+  .kr-row:last-child { border-bottom: none; }
+  .kr-desc { font-size: 12px; color: rgba(6,15,61,.75); flex: 1; line-height: 1.5; }
+  .kr-right { text-align: right; flex-shrink: 0; margin-left: 16px; }
+  .kr-conf { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .kr-conf.con { color: var(--green); } .kr-conf.neu { color: #E8A000; }
+  .kr-note { font-size: 9px; color: var(--muted); margin-top: 2px; max-width: 200px; line-height: 1.4; }
+
+  .bl { background: var(--blue); padding: 48px 56px; position: relative; overflow: hidden; }
+  .bl::after { content: 'CX'; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 320px; position: absolute; right: -20px; bottom: -60px; color: rgba(245,243,238,.04); line-height: 1; letter-spacing: -.04em; pointer-events: none; }
+  .bl-lbl { font-size: 9px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: rgba(245,243,238,.5); margin-bottom: 24px; }
+  .bl-items { display: flex; flex-direction: column; gap: 18px; }
+  .bl-item { display: flex; gap: 20px; align-items: flex-start; }
+  .bl-unit { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(245,243,238,.45); min-width: 80px; padding-top: 2px; }
+  .bl-text { font-size: 14px; font-weight: 300; color: rgba(245,243,238,.88); line-height: 1.75; }
+  .bl-verdict { margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(245,243,238,.12); }
+  .bl-verdict-lbl { font-size: 9px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(245,243,238,.45); margin-bottom: 12px; }
+  .bl-verdict-text { font-size: 17px; font-weight: 300; color: var(--off-white); line-height: 1.78; font-style: italic; max-width: 700px; }
+
+  .demo-banner { background: var(--blue-dark); padding: 14px 80px; display: flex; align-items: center; justify-content: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .demo-banner span { font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(245,243,238,.6); }
+  .demo-banner .badge { background: var(--blue); color: var(--off-white); padding: 3px 12px; font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+
+  /* FOOTER COM ASSINATURA OFICIAL */
+  .footer { padding: 40px 80px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(26,47,255,.1); background: var(--off-white); }
+  .footer-sig { display: flex; flex-direction: column; gap: 6px; }
+  .footer-sig .sig-name { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.04em; line-height: 0.9; color: var(--blue-dark); }
+  .footer-sig .sig-name span { color: #4da6ff; }
+  .footer-sig .sig-handle { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue); }
+  .footer-right { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); text-align: right; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span class="badge">Modelo</span>
+  <span>CX Power Rankings · Dados fictícios para fins ilustrativos</span>
+</div>
+
+<div class="cover">
+  <div class="cover-deco">
+    <div class="cover-deco-arc" style="width:600px;height:600px;top:-250px;right:-200px;"></div>
+    <div class="cover-deco-arc" style="width:300px;height:300px;bottom:-100px;left:-80px;"></div>
+  </div>
+  <div class="cover-logo">Customer Experience · Relatório Executivo</div>
+  <div class="cover-body">
+    <div class="cover-eyebrow">CX Leadership Report · Executive Edition</div>
+    <div class="cover-title">CX POWER<br>RANKINGS</div>
+    <div class="cover-tag">Junho · 2026</div>
+  </div>
+  <div class="cover-footer">
+    <div class="cover-meta">
+      <div class="cover-meta-item"><div class="lbl">Elaborado por</div><div class="val">Head de Customer Experience</div></div>
+      <div class="cover-meta-item"><div class="lbl">Período</div><div class="val">Junho / 2026</div></div>
+      <div class="cover-meta-item"><div class="lbl">Audiência</div><div class="val">Diretoria</div></div>
+    </div>
+    <div class="cover-kpi">
+      <div class="lbl">CSAT OKR Junho</div>
+      <div class="num">88,4%</div>
+      <div class="sub">99,9% da meta · Estável vs maio</div>
+    </div>
+  </div>
+</div>
+
+<div class="report">
+
+  <div class="sh"><div class="sh-num">01</div><div class="sh-label"><div class="sh-eye">Opening</div><div class="sh-title">League Context</div><div class="sh-sub">O clima do mês</div></div></div>
+  <div class="lc">
+    <p>Junho confirmou a maturidade operacional construída nos últimos três meses. O CSAT OKR fechou em 88,4%, dentro da meta pelo quarto mês consecutivo, e o volume de atendimentos cresceu 8,2% em relação a maio sem pressionar o TME das células escritas. O principal evento do mês foi a virada do novo fluxo de triagem no canal de suporte N2, que absorveu 34% mais volume com TME 22% menor, provando que o redesenho de processo tem mais impacto do que contratação na equação atual.</p>
+    <p>O ponto de atenção do ciclo é o canal de chat do segmento Essencial, que registrou CSAT de 72,3% nas últimas duas semanas após uma atualização de produto que alterou o comportamento do formulário de abertura de chamado. O impacto foi localizado, a causa raiz está identificada e a correção depende de uma pequena mudança de Produto prevista para a primeira semana de julho.</p>
+  </div>
+
+  <div class="sh"><div class="sh-num">02</div><div class="sh-label"><div class="sh-eye">Executive</div><div class="sh-title">Power Summary</div><div class="sh-sub">The month in one page</div></div></div>
+  <div class="g2" style="margin-bottom:2px;">
+    <div class="cell"><div class="cell-lbl">Principal movimento do mês</div><div class="cell-body strong">Virada do fluxo N2: TME -22% absorvendo volume +34%. Quarto mês consecutivo com CSAT OKR dentro da meta. Canal de voz com CSAT de 92,8%, melhor resultado do ano.</div></div>
+    <div class="cell"><div class="cell-lbl">Evento estrutural</div><div class="cell-body strong">Atualização de produto alterou formulário de abertura de chamado no segmento Essencial sem alinhamento prévio com CX. CSAT do canal de chat caiu para 72,3% nas semanas 3 e 4. Causa raiz identificada, correção prevista para julho.</div></div>
+    <div class="cell"><div class="cell-lbl">Principal risco percebido</div><div class="cell-body">Segmento Premium com três contas estratégicas sinalizando insatisfação com tempo de resolução em N2. Churn potencial de três contratos mapeado pelo Customer Success. Sem ação estruturada do CX definida até o fechamento do mês.</div></div>
+    <div class="cell"><div class="cell-lbl">Principal recuperação</div><div class="cell-body">Automação de triagem no canal escrito Básico: FCR subiu de 61% para 74% em três semanas. Redução de recontato em 18%. Impacto direto no CSAT do segmento, que fechou junho em 84,1% (+4,2 p.p. vs maio).</div></div>
+  </div>
+  <div class="g2">
+    <div class="cell full"><div class="cell-lbl">Leitura executiva consolidada</div><div class="cell-body strong">Junho mostrou que o CX tem capacidade de crescer em volume sem perder qualidade, desde que o processo esteja desenhado. O evento do formulário Essencial é um sinal de que o protocolo de alinhamento pré-lançamento com Produto ainda tem lacunas. Julho entra com dois focos: recuperar o CSAT do Essencial e converter os três clientes Premium em risco antes que o sinal de insatisfação vire pedido de cancelamento.</div></div>
+  </div>
+
+  <div class="sh"><div class="sh-num">03</div><div class="sh-label"><div class="sh-eye">Performance</div><div class="sh-title">Power Rankings</div><div class="sh-sub">Teams of the month</div></div></div>
+  <div class="g3">
+    <div class="rank-card gold">
+      <div class="rank-ghost">1</div><div class="rank-medal gold">1</div>
+      <div class="rank-name">Suporte N2</div><div class="rank-tag">Escalonamentos · Técnico · Premium</div>
+      <ul class="rank-list">
+        <li>Virada do fluxo de triagem: TME caiu de 4h12min para 3h16min absorvendo volume 34% maior</li>
+        <li>CSAT fechou em 87,6% (+5,1 p.p. vs maio), melhor resultado do N2 em 2026</li>
+        <li>FCR subiu de 58% para 71% após implementação do novo script de qualificação</li>
+        <li>Zero escalações críticas para Diretoria no mês, primeiro mês sem ocorrência desde fevereiro</li>
+        <li>Três contas Premium em risco mapeadas proativamente, antes de solicitação de cancelamento</li>
+      </ul>
+    </div>
+    <div class="rank-card silver">
+      <div class="rank-ghost">2</div><div class="rank-medal silver">2</div>
+      <div class="rank-name">Suporte N1</div><div class="rank-tag">Volume · Chat · E-mail · Voz</div>
+      <ul class="rank-list">
+        <li>CSAT geral de 85,3% (+1,8 p.p. vs maio), com canal de voz em 92,8%, melhor do ano</li>
+        <li>TME escritos em 14 minutos, estável pelo terceiro mês consecutivo</li>
+        <li>Automação de triagem no Básico: FCR +13 p.p. e recontato -18% em três semanas</li>
+        <li>Canal de chat Essencial com CSAT de 72,3% nas semanas 3 e 4 após mudança de Produto</li>
+        <li>Turnover de 12% no mês, acima da meta de 8%, com dois analistas seniores saindo</li>
+      </ul>
+    </div>
+    <div class="rank-card bronze">
+      <div class="rank-ghost">3</div><div class="rank-medal bronze">3</div>
+      <div class="rank-name">CX Ops</div><div class="rank-tag">Qualidade · Dados · Treinamento · Ferramentas</div>
+      <ul class="rank-list">
+        <li>Dashboard de CSAT por segmento lançado: primeira vez que N1 e N2 têm visibilidade unificada em tempo real</li>
+        <li>Ciclo de calibração de QA com 94% de alinhamento entre avaliadores, meta atingida pela primeira vez</li>
+        <li>Trilha de onboarding 2.0 reduz tempo de rampagem de 45 para 32 dias nos primeiros testes</li>
+        <li>Health Score ainda sem validação final do time de Dados, entrega atrasada em três semanas</li>
+        <li>Backlog de automações represado: cinco entregas prioritárias aguardam aprovação de TI há mais de 30 dias</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sh"><div class="sh-num">04</div><div class="sh-label"><div class="sh-eye">Metrics</div><div class="sh-title">Numbers of the Month</div><div class="sh-sub">What the league is telling us</div></div></div>
+  <div class="g4" style="margin-bottom:2px;">
+    <div class="num-card"><div class="num-lbl">Volume Total · CX</div><div class="num-val neu">+8,2%</div><div class="num-delta up">↑ vs maio</div><div class="num-note">Total junho: 42.318 atendimentos. Crescimento absorvido sem pressão de TME em escritos.</div></div>
+    <div class="num-card"><div class="num-lbl">TME N1 · Escritos</div><div class="num-val pos">14 min</div><div class="num-delta up">↔ estável vs maio</div><div class="num-note">Mediana mensal. Terceiro mês consecutivo dentro da meta de 18 minutos.</div></div>
+    <div class="num-card"><div class="num-lbl">CSAT OKR Geral</div><div class="num-val pos">88,4%</div><div class="num-delta up">↔ -0,3 p.p. vs maio</div><div class="num-note">99,9% da meta. Dentro da faixa de consistência pelo quarto mês.</div></div>
+    <div class="num-card"><div class="num-lbl">CSAT · Voz</div><div class="num-val pos">92,8%</div><div class="num-delta up">↑ +1,4 p.p. vs maio</div><div class="num-note">Melhor resultado do canal no ano. 97% das ligações atendidas em até 90 segundos.</div></div>
+    <div class="num-card"><div class="num-lbl">CSAT · Chat Essencial</div><div class="num-val neg">72,3%</div><div class="num-delta down">↓ -9,1 p.p. vs maio</div><div class="num-note">Impacto direto de mudança no formulário sem alinhamento com CX.</div></div>
+    <div class="num-card"><div class="num-lbl">TME N2 · Escritos</div><div class="num-val pos">3h16min</div><div class="num-delta up">↓ -22% vs maio</div><div class="num-note">Virada do fluxo de triagem com volume +34%. Maior ganho de eficiência do trimestre.</div></div>
+    <div class="num-card"><div class="num-lbl">FCR · N1 Básico</div><div class="num-val pos">74%</div><div class="num-delta up">↑ +13 p.p. vs maio</div><div class="num-note">Automação de triagem. Recontato caiu 18% no segmento após implementação.</div></div>
+    <div class="num-card"><div class="num-lbl">NPS · Parcial Junho</div><div class="num-val neg">−32</div><div class="num-delta down">↓ -8 pts vs maio</div><div class="num-note">Detratores concentrados em Essencial e LTDA. Taxas e tempo de resolução como principais motivos.</div></div>
+  </div>
+  <div class="hist-bar">
+    <div class="hist-bar-info"><div class="lbl">OKR Empresa · Todas as divisões</div><div class="sub">CSAT OKR · Série histórica 2026</div></div>
+    <div class="hist-kpis"><div><div class="hist-kpi-val">88,4%</div><div class="hist-kpi-lbl">Junho</div></div><div><div class="hist-kpi-val">99,9%</div><div class="hist-kpi-lbl">da meta</div></div></div>
+  </div>
+  <div class="hist-months">
+    <div class="hist-month"><div class="m-lbl">Jan</div><div class="m-val" style="color:rgba(6,15,61,.28);">78,2%</div></div>
+    <div class="hist-month"><div class="m-lbl">Fev</div><div class="m-val" style="color:rgba(6,15,61,.4);">81,5%</div></div>
+    <div class="hist-month"><div class="m-lbl">Mar</div><div class="m-val" style="color:rgba(6,15,61,.55);">84,8%</div></div>
+    <div class="hist-month"><div class="m-lbl">Abr</div><div class="m-val" style="color:rgba(6,15,61,.7);">86,3%</div></div>
+    <div class="hist-month"><div class="m-lbl">Mai</div><div class="m-val" style="color:rgba(6,15,61,.85);">88,7%</div></div>
+    <div class="hist-month current"><div class="m-lbl">Jun</div><div class="m-val">88,4%</div></div>
+  </div>
+
+  <div class="sh"><div class="sh-num">05</div><div class="sh-label"><div class="sh-eye">Correlation</div><div class="sh-title">TME × CSAT Watch</div><div class="sh-sub">Saúde dos indicadores por célula</div></div></div>
+  <div class="g3">
+    <div class="watch-card"><div class="watch-cell-lbl">N1 · Chat por Segmento</div><table class="watch-table"><tr><th>Semana</th><th>TME Básico</th><th>TME Essencial</th><th>CSAT Geral</th></tr><tr><td>S23</td><td>11 min</td><td>13 min</td><td>87,2%</td></tr><tr><td>S24</td><td>12 min</td><td>14 min</td><td>86,8%</td></tr><tr><td>S25</td><td>10 min</td><td>18 min</td><td>82,1%</td></tr><tr><td>S26</td><td>11 min</td><td>21 min</td><td>80,4%</td></tr></table><div class="watch-note">Essencial apresentou aumento de TME nas semanas 3 e 4 diretamente correlacionado com a mudança no formulário de abertura.</div></div>
+    <div class="watch-card"><div class="watch-cell-lbl">N2 · Fluxo Geral</div><table class="watch-table"><tr><th>Semana</th><th>TME</th><th>Volume</th><th>CSAT</th></tr><tr><td>S23</td><td>4h08min</td><td>312</td><td>82,4%</td></tr><tr><td>S24</td><td>3h44min</td><td>356</td><td>84,1%</td></tr><tr><td>S25</td><td>3h22min</td><td>398</td><td>86,8%</td></tr><tr><td>S26</td><td>3h16min</td><td>419</td><td>87,6%</td></tr></table><div class="watch-note">Correlação invertida e positiva: volume cresceu 34% enquanto TME caiu 22% e CSAT subiu 5,2 p.p.</div></div>
+    <div class="watch-card"><div class="watch-cell-lbl">N1 · Canal de Voz</div><table class="watch-table"><tr><th>Semana</th><th>TME Fila</th><th>CSAT</th></tr><tr><td>S23</td><td>1min42s</td><td>91,3%</td></tr><tr><td>S24</td><td>1min38s</td><td>92,0%</td></tr><tr><td>S25</td><td>1min55s</td><td>91,8%</td></tr><tr><td>S26</td><td>1min30s</td><td>93,4%</td></tr></table><div class="watch-note">Canal mais consistente do mês. TME de fila abaixo de 2 minutos em todas as semanas.</div></div>
+  </div>
+
+  <div class="sh"><div class="sh-num">06</div><div class="sh-label"><div class="sh-eye">Balance</div><div class="sh-title">Plus &amp; Minus</div><div class="sh-sub">What moved the needle</div></div></div>
+  <div class="g2">
+    <div class="pm-card pc">
+      <div class="pm-header"><div class="pm-icon plus">+</div><div class="pm-title">Right Way · O que puxou pra cima</div></div>
+      <div class="pm-items">
+        <div class="pm-item pi"><div class="pm-tag">N2</div>Virada do fluxo de triagem: TME -22% absorvendo volume +34%. Primeira vez que N2 cresce em volume e melhora simultaneamente em TME e CSAT no mesmo ciclo.</div>
+        <div class="pm-item pi"><div class="pm-tag">N1</div>Automação de triagem no Básico: FCR subiu de 61% para 74% em três semanas. Recontato caiu 18%.</div>
+        <div class="pm-item pi"><div class="pm-tag">N1 · Voz</div>Canal de voz com CSAT de 92,8% e TME de fila abaixo de 2 minutos em todas as semanas. Melhor resultado do canal em 2026.</div>
+        <div class="pm-item pi"><div class="pm-tag">CX Ops</div>Dashboard de CSAT unificado lançado. N1 e N2 com visibilidade em tempo real no mesmo painel.</div>
+        <div class="pm-item pi"><div class="pm-tag">CX Ops</div>94% de alinhamento no ciclo de calibração de QA: meta histórica atingida pela primeira vez.</div>
+      </div>
+    </div>
+    <div class="pm-card mc">
+      <div class="pm-header"><div class="pm-icon minus">−</div><div class="pm-title">Wrong Way · O que puxou pra baixo</div></div>
+      <div class="pm-items">
+        <div class="pm-item mi"><div class="pm-tag">N1 · Essencial</div>Mudança no formulário sem alinhamento prévio com CX: CSAT do chat Essencial caiu 9,1 p.p. em duas semanas.</div>
+        <div class="pm-item mi"><div class="pm-tag">N1</div>Turnover de 12%, acima da meta de 8%. Dois analistas seniores saíram com perda de conhecimento tácito.</div>
+        <div class="pm-item mi"><div class="pm-tag">N2 · Premium</div>Três contas estratégicas com sinal de insatisfação ativo sem plano de ação estruturado do CX.</div>
+        <div class="pm-item mi"><div class="pm-tag">CX Ops</div>Health Score atrasado em três semanas. Cinco automações aguardam aprovação de TI há mais de 30 dias.</div>
+        <div class="pm-item mi"><div class="pm-tag">N1</div>NPS parcial em -32 pontos: queda de 8 pontos vs maio. Terceiro mês com os mesmos motivos de detração.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sh"><div class="sh-num">07</div><div class="sh-label"><div class="sh-eye">Highlights</div><div class="sh-title">Highs &amp; Lows</div><div class="sh-sub">Best and worst of the month</div></div></div>
+  <div class="g3">
+    <div class="hl-card high"><div class="hl-cell">N2 · Fluxo</div><div class="hl-type">↑ Highs</div><div class="hl-item">Volume +34% com TME -22% e CSAT +5,1 p.p. no mesmo ciclo: primeiro resultado simultâneo do tipo no N2 em 2026</div><div class="hl-item">Zero escalações críticas para Diretoria: primeiro mês sem ocorrência desde fevereiro</div><div class="hl-item">FCR subiu de 58% para 71% com novo script de qualificação</div></div>
+    <div class="hl-card high"><div class="hl-cell">N1 · Voz</div><div class="hl-type">↑ Highs</div><div class="hl-item">CSAT de 93,4% na semana 4: melhor resultado semanal do canal no ano</div><div class="hl-item">TME de fila abaixo de 2 minutos em todas as quatro semanas pela primeira vez</div><div class="hl-item">97% das ligações atendidas em até 90 segundos, acima da meta de 95%</div></div>
+    <div class="hl-card high"><div class="hl-cell">CX Ops</div><div class="hl-type">↑ Highs</div><div class="hl-item">Dashboard unificado de CSAT N1 + N2: elimina consolidação manual e habilita decisão em tempo real</div><div class="hl-item">94% de alinhamento no ciclo de calibração de QA: meta histórica atingida</div><div class="hl-item">Onboarding 2.0 reduz rampagem de 45 para 32 dias nos primeiros testes</div></div>
+    <div class="hl-card low"><div class="hl-cell">N1 · Chat Essencial</div><div class="hl-type">↓ Lows</div><div class="hl-item">CSAT de 72,3% nas semanas 3 e 4: queda de 9,1 p.p. por mudança de Produto sem alinhamento</div><div class="hl-item">TME do Essencial subiu de 13 para 21 minutos, pior mark do canal no ano</div><div class="hl-item">Resultado evitável com protocolo de pré-lançamento</div></div>
+    <div class="hl-card low"><div class="hl-cell">N1 · Retenção</div><div class="hl-type">↓ Lows</div><div class="hl-item">Turnover de 12%: dois analistas seniores saíram, acima da meta de 8%</div><div class="hl-item">Perda de conhecimento tácito em dois processos críticos sem documentação</div><div class="hl-item">Pressão imediata sobre pares na semana de transição</div></div>
+    <div class="hl-card low"><div class="hl-cell">NPS · Parcial</div><div class="hl-type">↓ Lows</div><div class="hl-item">NPS parcial em -32: queda de 8 pontos vs maio</div><div class="hl-item">Terceiro mês consecutivo com os mesmos dois motivos de detração: taxas e TME</div><div class="hl-item">Sem solução estruturada em andamento para nenhum dos dois vetores</div></div>
+  </div>
+
+  <div class="sh"><div class="sh-num">08</div><div class="sh-label"><div class="sh-eye">Forward</div><div class="sh-title">What to Watch</div><div class="sh-sub">Próximo mês: riscos, oportunidades e dependências</div></div></div>
+  <div class="g3">
+    <div class="wtw-card risk"><div class="wtw-lbl">⚠ Riscos · Julho</div><div class="wtw-title">Escalation Zone</div><div class="wtw-item">Três contas Premium com sinal ativo de insatisfação sem plano formal do CX. Churn potencial com impacto financeiro direto.</div><div class="wtw-item">CSAT do chat Essencial em 72,3%. Correção prevista para julho: cada semana de atraso carrega o problema para agosto.</div><div class="wtw-item">Turnover deixou dois processos críticos com cobertura reduzida. Risco operacional cresce sem documentação.</div><div class="wtw-item">NPS em queda pelos mesmos motivos pelo terceiro mês: ausência de intervenção acelera a deterioração.</div></div>
+    <div class="wtw-card opp"><div class="wtw-lbl">↗ Oportunidades · Julho</div><div class="wtw-title">Acceleration Zone</div><div class="wtw-item">Replicar modelo de triagem do N2 para o N1 Essencial com baixo custo de implementação.</div><div class="wtw-item">Onboarding 2.0 reduzindo rampagem de 45 para 32 dias: ganho de capacidade sem headcount.</div><div class="wtw-item">Dashboard unificado: julho é o primeiro mês completo com o painel ativo para ajustes semanais.</div><div class="wtw-item">VOC direcionado para detratores de NPS: ação preventiva antes da próxima rodada de pesquisa.</div></div>
+    <div class="wtw-card dep"><div class="wtw-lbl">⟲ Dependências Críticas</div><div class="wtw-title">External Watch</div><div class="wtw-item">Produto: correção do formulário Essencial prevista para a primeira semana de julho.</div><div class="wtw-item">TI: cinco automações prioritárias aguardando aprovação há mais de 30 dias.</div><div class="wtw-item">Dados: Health Score com entrega atrasada em três semanas.</div><div class="wtw-item">CS: alinhamento sobre as três contas Premium na primeira semana de julho.</div></div>
+  </div>
+
+  <div class="sh"><div class="sh-num">09</div><div class="sh-label"><div class="sh-eye">Execution</div><div class="sh-title">Actions in Progress</div><div class="sh-sub">Pipeline por divisão · ações prioritárias</div></div></div>
+  <table class="act-table">
+    <tr><th>Ação</th><th>Responsável</th><th>Status</th><th>Impacto esperado</th></tr>
+    <tr class="div-row"><td colspan="4">SUPORTE N1</td></tr>
+    <tr><td>Triagem automatizada no canal Essencial (replicação do modelo Básico)</td><td>Coord. N1</td><td><span class="sb ini">A iniciar</span></td><td>TME -15% estimado e FCR +10 p.p. no segmento</td></tr>
+    <tr><td>Protocolo de documentação para saída de analistas seniores</td><td>Coord. N1 + CX Ops</td><td><span class="sb pend">Pendente</span></td><td>Redução do risco operacional em transições</td></tr>
+    <tr><td>Plano de ação para contas Premium em risco</td><td>Coord. N1 + CS</td><td><span class="sb ini">A iniciar</span></td><td>Prevenção de churn com impacto financeiro direto</td></tr>
+    <tr><td>VOC direcionado para detratores de NPS</td><td>Analista VOC</td><td><span class="sb and">Em andamento</span></td><td>Conversão preventiva antes da próxima rodada de NPS</td></tr>
+    <tr class="div-row"><td colspan="4">SUPORTE N2</td></tr>
+    <tr><td>Expansão do fluxo de triagem para sub-segmento Corporativo</td><td>Coord. N2</td><td><span class="sb ini">Iniciado</span></td><td>Replicar queda de TME e ganho de CSAT do modelo testado</td></tr>
+    <tr><td>Plano de acompanhamento para três contas Premium em risco</td><td>Coord. N2</td><td><span class="sb pend">Pendente</span></td><td>Prevenção de churn e proteção do NPS Premium</td></tr>
+    <tr><td>Revisão do script de qualificação para chamados técnicos</td><td>Coord. N2 + CX Ops</td><td><span class="sb and">Em andamento</span></td><td>FCR de 71% para 78% estimado</td></tr>
+    <tr class="div-row"><td colspan="4">CX OPS</td></tr>
+    <tr><td>Health Score: finalização e validação com Dados</td><td>CX Ops + Dados</td><td><span class="sb pend">Pendente</span></td><td>Acompanhamento estruturado de rampagem e performance individual</td></tr>
+    <tr><td>Desbloqueio das 5 automações prioritárias junto ao TI</td><td>CX Ops</td><td><span class="sb and">Em andamento</span></td><td>Redução de trabalho manual e escala sem headcount</td></tr>
+    <tr><td>Onboarding 2.0: validação da segunda turma</td><td>CX Ops</td><td><span class="sb and">Em andamento</span></td><td>Consolidar rampagem de 32 dias como novo padrão</td></tr>
+    <tr><td>Dashboard de CSAT: extensão por agente e por motivo</td><td>CX Ops + Dados</td><td><span class="sb ini">Iniciado</span></td><td>Granularidade para coaching individualizado</td></tr>
+  </table>
+
+  <div class="sh"><div class="sh-num">10</div><div class="sh-label"><div class="sh-eye">Ciclo · Q2 2026</div><div class="sh-title">OKR Tracker</div><div class="sh-sub">Estratégicos abertos com KRs · Junho 2026</div></div></div>
+  <div class="okr-bar">
+    <div class="okr-bar-info"><div class="lbl">Q2/2026 · 8 Objetivos</div><div class="sub">Visão consolidada · Junho 2026</div></div>
+    <div class="okr-kpis"><div><div class="okr-kpi-val">42%</div><div class="okr-kpi-lbl">Progresso</div></div><div><div class="okr-kpi-val green">37,5%</div><div class="okr-kpi-lbl">Encaminhado</div></div><div><div class="okr-kpi-val yellow">25%</div><div class="okr-kpi-lbl">Em atenção</div></div></div>
+  </div>
+  <div class="okr-block">
+    <div class="okr-head"><div class="okr-head-title">Elevar a qualidade percebida do atendimento, atingindo CSAT OKR acima de 88% de forma consistente em todos os segmentos até o fim do Q2 · 58%</div><div class="okr-type">Estratégico · Head CX</div></div>
+    <div class="kr-row"><div class="kr-desc">Manter CSAT OKR geral acima de 88% em todos os meses do Q2</div><div class="kr-right"><div class="kr-conf con">Confiante · 66%</div><div class="kr-note">Abril 86,3% · Maio 88,7% · Junho 88,4%: dois de três meses acima da meta</div></div></div>
+    <div class="kr-row"><div class="kr-desc">Atingir CSAT acima de 85% em todos os segmentos até o fim do Q2</div><div class="kr-right"><div class="kr-conf neu">Neutro · 50%</div><div class="kr-note">Essencial fechou junho em 79,1%. Precisa recuperar em julho</div></div></div>
+    <div class="kr-row"><div class="kr-desc">Reduzir recontato em 20% vs Q1 até o fim do Q2</div><div class="kr-right"><div class="kr-conf con">Confiante · 58%</div><div class="kr-note">Recontato caiu 18% no Básico em junho. Expansão pode fechar a meta</div></div></div>
+  </div>
+  <div class="okr-block">
+    <div class="okr-head"><div class="okr-head-title">Estruturar a inteligência operacional do CX com dados, dashboards e processos que sustentem decisão baseada em evidência · 35%</div><div class="okr-type">Estratégico · Head CX</div></div>
+    <div class="kr-row"><div class="kr-desc">Lançar dashboard unificado de CSAT com granularidade por segmento, canal e agente até junho</div><div class="kr-right"><div class="kr-conf con">Confiante · 70%</div><div class="kr-note">Dashboard lançado em junho. Extensão por agente prevista para julho</div></div></div>
+    <div class="kr-row"><div class="kr-desc">Operacionalizar Health Score de performance individual dos analistas até o fim do Q2</div><div class="kr-right"><div class="kr-conf neu">Neutro · 20%</div><div class="kr-note">Entrega atrasada três semanas por dependência de Dados</div></div></div>
+    <div class="kr-row"><div class="kr-desc">Atingir 90% de alinhamento no ciclo de calibração de QA até o fim do Q2</div><div class="kr-right"><div class="kr-conf con">Confiante · 94%</div><div class="kr-note">Meta de 94% atingida em junho pela primeira vez</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sh-num">11</div><div class="sh-label"><div class="sh-eye">Closing</div><div class="sh-title">Bottom Line</div><div class="sh-sub">Leitura final por célula e veredicto consolidado</div></div></div>
+  <div class="bl">
+    <div class="bl-lbl">Leitura executiva por célula</div>
+    <div class="bl-items">
+      <div class="bl-item"><div class="bl-unit">N1</div><div class="bl-text">Junho foi um mês de dois ritmos. Canal de voz com o melhor CSAT do ano, automação do Básico com resultado comprovado e FCR em alta. Do outro lado, a mudança de formulário do Essencial sem alinhamento prévio derrubou o CSAT do canal em 9 pontos em duas semanas. O turnover acima da meta é o segundo sinal de atenção: dois analistas seniores saindo sem documentação estruturada é um risco que cresce silenciosamente.</div></div>
+      <div class="bl-item"><div class="bl-unit">N2</div><div class="bl-text">O melhor mês do N2 no ano. A virada do fluxo de triagem provou que processo bate headcount: volume 34% maior, TME 22% menor e CSAT 5 pontos acima, tudo no mesmo ciclo. O risco que entra em julho são as três contas Premium com sinal ativo de insatisfação. O CS as mapeou, mas o CX ainda não formalizou sua contribuição no plano de retenção.</div></div>
+      <div class="bl-item"><div class="bl-unit">CX Ops</div><div class="bl-text">Mês de entregas estruturais com dois pontos de bloqueio. O dashboard unificado e a calibração de QA com 94% de alinhamento são marcos reais. O Health Score atrasado e as cinco automações presas em TI são atrasos que acumulam juros: cada semana sem eles é uma semana de decisão manual onde poderia haver dado e escala.</div></div>
+    </div>
+    <div class="bl-verdict">
+      <div class="bl-verdict-lbl">Veredicto executivo consolidado · Junho 2026</div>
+      <div class="bl-verdict-text">Junho entregou o que o Q2 precisava: evidência de que processo bem desenhado cria capacidade sem aumentar custo. O N2 provou isso. O N1 também, no Básico. O CSAT OKR ficou na meta pelo quarto mês seguido. O que o mês também mostrou é que uma mudança de produto sem protocolo de alinhamento com CX derruba em duas semanas o que levou dois meses para construir. Julho tem agenda clara: recuperar o Essencial, proteger as três contas Premium e destravar as automações.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-sig">
+    <div class="sig-name">Henrique<span>.</span></div>
+    <div class="sig-handle">@havelar.jr</div>
+  </div>
+  <div class="footer-right">CX Power Rankings · Modelo Demonstrativo<br>Dados Fictícios · Junho 2026</div>
+</div>
+
+</body>
+</html>
